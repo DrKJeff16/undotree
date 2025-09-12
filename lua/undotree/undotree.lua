@@ -125,7 +125,7 @@ local function set_line(graph, index, char, indent)
   if line_len >= indent * 2 + 1 then
     graph[index] = line:sub(1, indent * 2) .. char .. line:sub(indent * 2 + 2)
   else
-    graph[index] = line .. string.rep(" ", indent * 2 - line_len) .. char
+    graph[index] = line .. (" "):rep(indent * 2 - line_len) .. char
   end
 end
 
@@ -150,22 +150,22 @@ local function draw(tree, graph, line2seq, other_info, seq, parent_ind)
     local parent_line_len = parent_line:len()
 
     if parent_line_len < tree.indent * 2 + 1 then
-      graph[parent_lnum] = parent_line .. string.rep("-", tree.indent * 2 + 1 - parent_line_len)
+      graph[parent_lnum] = parent_line .. ("-"):rep(tree.indent * 2 + 1 - parent_line_len)
     elseif parent_line_len > tree.indent * 2 + 1 then
       graph[parent_lnum] = parent_line:sub(1, parent_ind * 2 + 1)
-        .. string.rep("-", (tree.indent - parent_ind) * 2)
+        .. ("-"):rep((tree.indent - parent_ind) * 2)
         .. parent_line:sub(tree.indent * 2 + 2)
     end
 
     if parent_lnum == #graph then
-      table.insert(graph, string.rep(" ", tree.indent * 2) .. "|")
+      table.insert(graph, (" "):rep(tree.indent * 2) .. "|")
     else
       for lnum = parent_lnum + 1, #graph do
         set_line(graph, lnum, "|", tree.indent)
       end
     end
 
-    table.insert(graph, string.rep(" ", tree.indent * 2) .. "*")
+    table.insert(graph, (" "):rep(tree.indent * 2) .. "*")
     line2seq[#graph] = seq
     other_info[seq] = {
       save = tree.save,
@@ -261,7 +261,7 @@ function Undotree:gen_graph_tree()
   self.seq2line[0] = #graph
   self.line2seq[#graph] = 0
   self.seq2parent[0] = nil
-  graph[1] = graph[1] .. string.rep(" ", 4) .. "(Original)"
+  graph[1] = graph[1] .. (" "):rep(4) .. "(Original)"
 
   for i = 2, self.seq2line[0] do
     if line2seq[i] ~= nil then
@@ -271,7 +271,7 @@ function Undotree:gen_graph_tree()
       self.seq2parent[seq] = other_info[seq].parent
 
       graph[i] = graph[i]
-        .. string.rep(" ", 4)
+        .. (" "):rep(4)
         .. seq
         .. (other_info[seq].save and " s " or "   ")
         .. time_ago(other_info[seq].time)
